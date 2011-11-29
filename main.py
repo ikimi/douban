@@ -4,7 +4,10 @@
 import allfiles
 import update
 import queue
+import threading
 from Queue import Queue
+
+mylock = threading.RLock()
 
 if __name__=="__main__":
 	path="/home/icys/桌面/wxPython/douban/奶茶"
@@ -19,7 +22,8 @@ if __name__=="__main__":
 	#print queue.maxsize
 	# 建立producer子线程
 	# 第二个 num 为 mnames 中mp3文件个数
-	pro = queue.producer(que,num,mnames)
+	# 第四个参数为输出锁
+	pro = queue.producer(que,num,mnames,mylock)
 	pro.start()
 	pro.join
 	#for name in mnames:

@@ -5,13 +5,15 @@ import sys
 import json
 from eyeD3 import *
 import time
+import threading
 
 class update:
 	url = "http://api.douban.com/music/subjects"
-	def __init__(self,filename):
+	def __init__(self,filename,Lock):
 		self.filename = []
 		self.filename = filename
-		print self.filename[1]
+		self.mylock = Lock
+	#	print self.filename[1]
 	#返回歌曲信息
 	def search(self):
 		self.url = self. url + "?" + "q=" + self.filename[1] + "&alt=json"
@@ -23,11 +25,14 @@ class update:
 			entries = json.loads(data)
 			author = 'author'
 			Data ={}
-			print self.filename[1]
+		#	print self.filename[1]
 			#满足符合的歌曲总数
 			Len = json.dumps(entries['opensearch:totalResults'],ensure_ascii=False)	
 			Sum = int(Len[8:len(Len)-2])
 			#如果没有查询到结果
+
+			self.mylock.acquire()
+			print  "歌名",self.filename[1]
 			if Sum == 0:
 				print "Not Found!"
 				return
@@ -81,6 +86,9 @@ class update:
 				print Data['Album']
 				time.sleep(3)
 			self.refresh(Data)
+			
+			self.mylock.release()
+
 		except:
 			print "服务器连接失败!";
 	#更新歌曲信息

@@ -4,22 +4,28 @@ import time
 import update
 from Queue import Queue
 
+#mylock = threading.RLock()
+
 # -*- 类接受两个参数 
 # -*- name 在信号量队列中的编号
 # -*- queue 信号量队列
 
 class customer(threading.Thread):
 	Data = []
-	def __init__(self,t_name,queue,data):
+	def __init__(self,t_name,queue,data,Lock):
 		threading.Thread.__init__(self,name =t_name)
 		self.data = queue
 		self.name = t_name
 		self.Data = data
+		self.mylock = Lock
+
 	def run(self):
 		time.sleep(14)
-	#	update.update()
-		print self.name
-		print self.Data[0] + '/' +self.Data[1] + '.mp3'
+	#	print self.name
+		# 更新文件信息
+		mp3 = update.update(self.Data,self.mylock)
+		mp3.search()
+	#	print self.Data[0] + '/' +self.Data[1] + '.mp3'
 		self.data.get()
 
 # -*- 接受两个参数	
@@ -28,18 +34,19 @@ class customer(threading.Thread):
 
 class producer(threading.Thread):
 	mnames = []
-	def __init__(self,queue,num,mnames):
+	def __init__(self,queue,num,mnames,Lock):
 		threading.Thread.__init__(self)
 		self.num = num
 		self.data = queue
 		self.mnames = mnames
+		self.mylock = Lock
 	def run(self):
 		i = 0
 		while i<self.num :
 			n = i%self.data.maxsize
 			self.data.put(n)
 			#创建一个新进程
-			c = customer(n,self.data,self.mnames[i])
+			c = customer(n,self.data,self.mnames[i],self.mylock)
 			c.start()
 			i+=1
 			time.sleep(1)
