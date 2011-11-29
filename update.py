@@ -23,7 +23,7 @@ class update:
 			entries = json.loads(data)
 			author = 'author'
 			Data ={}
-	#		print self.filename[1]
+			print self.filename[1]
 			#满足符合的歌曲总数
 			Len = json.dumps(entries['opensearch:totalResults'],ensure_ascii=False)	
 			Sum = int(Len[8:len(Len)-2])
@@ -92,7 +92,8 @@ class update:
 		try:
 	#		print self.filename[0] + '/' + self.filename[1] + '.mp3'
 			path = self.filename[0] + '/' + self.filename[1] + '.mp3'
-			tag.link(path)
+			if not tag.link(path):#如果mp3文件没有tag信息 设置
+				tag.header.setVersion(eyeD3.ID3_V2_3)
 			tag.removeImages()
 			tag.encoding = '\x01'
 			#设置歌手

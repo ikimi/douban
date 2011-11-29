@@ -5,7 +5,7 @@ import allfiles
 import update
 
 if __name__=="__main__":
-	path="/home/icys/桌面/wxPython/douban/奶茶"
+	path="/home/udonmai/桌面/douban_u"
 	list = allfiles.file_list(path)
 	mnames = list.listout(0)
 	
