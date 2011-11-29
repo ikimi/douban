@@ -5,12 +5,15 @@ import allfiles
 import update
 
 if __name__=="__main__":
-	path="/home/udonmai/桌面/douban_u"
+	path="/home/icys/桌面/wxPython/douban/奶茶"
 	list = allfiles.file_list(path)
 	mnames = list.listout(0)
 	
 	for name in mnames:
-		music = update.update(name[1])
+#		print name[0] + "\n"
+#		print name[1] + "\n"
+		music = update.update(name)
+	#	print music
 		music.search()
 
 
