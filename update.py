@@ -3,7 +3,7 @@ import urllib
 import urllib2
 import sys
 import json
-import eyeD3
+from eyeD3 import *
 import time
 
 class update:
@@ -12,7 +12,6 @@ class update:
 		self.filename = []
 		self.filename = filename
 		print self.filename[1]
-	#	print filename
 	#返回歌曲信息
 	def search(self):
 		self.url = self. url + "?" + "q=" + self.filename[1] + "&alt=json"
@@ -84,22 +83,22 @@ class update:
 	
 	#更新歌曲信息
 	def refresh(self,data):
-	#	print data['author']
-	#	print data['Album']
-	#	print data['img']
+		print data['author']
+		print data['Album']
+		print data['img']
 		tag = eyeD3.Tag()
-		tag = encoding = '\x01'
-	#	print self.filename[0] + '/' + self.filename[1] + '.mp3'
+	#	tag.encoding = '\x01'
+		print self.filename[0] + '/' + self.filename[1] + '.mp3'
 		path = self.filename[0] + '/' + self.filename[1] + '.mp3'
 		tag.link(path)
 		tag.removeImages()
-#		tag.encoding = '\x01'
+		tag.encoding = '\x01'
 		#设置歌手
 		tag.setArtist(data['author'])
-	#	print tag.getArtist()
+		print tag.getArtist()
 		#设置专辑
 		tag.setAlbum(data['Album'])
-	#	print tag.getAlbum()
+		print tag.getAlbum()
 		img = urllib.urlopen(data['img']).read()
 		temp = file('temp.jpg','wb')
 		temp.write(img)

@@ -88,9 +88,13 @@ def TRACE_MSG(msg):
        except UnicodeEncodeError:
            pass;
 
-STRICT_ID3 = 0;
+STRICT_ID3 = 0
 def strictID3():
-   return STRICT_ID3;
+   return STRICT_ID3
+
+ITUNES_COMPAT = 0
+def itunesCompat():
+   return ITUNES_COMPAT
 ################################################################################
 
 import os;
@@ -180,3 +184,21 @@ def format_time_delta(td):
     if days:
         tstr = "%d days %s" % (days, tstr)
     return tstr
+
+## MIME type guessing
+import mimetypes
+try:
+    import magic
+    _magic = magic.open(magic.MAGIC_SYMLINK | magic.MAGIC_MIME)
+    _magic.load()
+except:
+    _magic = None
+
+def guess_mime_type(filename):
+    mime = mimetypes.guess_type(filename)[0]
+    if not mime and _magic and os.path.isfile(filename):
+        mime = _magic.file(filename)
+        if mime:
+            mime = mime.split(";")[0]
+    return mime
+

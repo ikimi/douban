@@ -1,4 +1,3 @@
-#!/user/bin/env python2
 ################################################################################
 #  Copyright (C) 2002-2005,2007  Travis Shirk <travis@pobox.com>
 #
@@ -18,8 +17,8 @@
 #
 ################################################################################
 
-eyeD3Version = "0.6.17";
-eyeD3Maintainer = "Travis Shirk <travis@pobox.com>";
+eyeD3Version = "@PACKAGE_VERSION@";
+eyeD3Maintainer = "@PACKAGE_BUGREPORT@";
 
 # Version constants
 ID3_CURRENT_VERSION = 0x00; # The version of the linked tag, if any.

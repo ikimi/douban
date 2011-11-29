@@ -24,7 +24,7 @@ import eyeD3.mp3;
 from frames import *;
 from binfuncs import *;
 import math;
-#:wfrom xml.sax.saxutils import escape
+from xml.sax.saxutils import escape
 
 ID3_V1_COMMENT_DESC = "ID3 v1 Comment";
 
