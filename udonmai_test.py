@@ -10,10 +10,7 @@ if __name__=="__main__":
 	mnames = list.listout(0)
 	
 	for name in mnames:
-#		print name[0] + "\n"
-#		print name[1] + "\n"
 		music = update.update(name)
-	#	print music
 		music.search()
 
 
