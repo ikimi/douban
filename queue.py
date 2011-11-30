@@ -20,7 +20,7 @@ class customer(threading.Thread):
 		self.mylock = Lock
 
 	def run(self):
-		time.sleep(14)
+		time.sleep(5)
 	#	print self.name
 		# 更新文件信息
 		mp3 = update.update(self.Data,self.mylock)
