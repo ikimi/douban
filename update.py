@@ -2,16 +2,19 @@
 import urllib
 import urllib2
 import sys
+import os
 import json
 from eyeD3 import *
 import time
+import threading
 
 class update:
 	url = "http://api.douban.com/music/subjects"
-	def __init__(self,filename):
+	def __init__(self,filename,Lock):
 		self.filename = []
 		self.filename = filename
-		print self.filename[1]
+		self.mylock = Lock
+	#	print self.filename[1]
 	#返回歌曲信息
 	def search(self):
 		self.url = self. url + "?" + "q=" + self.filename[1] + "&alt=json"
@@ -23,11 +26,14 @@ class update:
 			entries = json.loads(data)
 			author = 'author'
 			Data ={}
-			print self.filename[1]
+		#	print self.filename[1]
 			#满足符合的歌曲总数
 			Len = json.dumps(entries['opensearch:totalResults'],ensure_ascii=False)	
 			Sum = int(Len[8:len(Len)-2])
 			#如果没有查询到结果
+
+			self.mylock.acquire()
+			print  "歌名",self.filename[1]
 			if Sum == 0:
 				print "Not Found!"
 				return
@@ -45,19 +51,24 @@ class update:
 				Data['img'] = Data['img'][28:len(Data['img'])]
 			#如果存在多条结果
 			else:
-				i = 1
+				list = [[0 for col in range(10)]for row in range(3)]
+				i = 0
 				for entry in entries['entry']:
 					if author in entry:
 						#Data['author'] = json.dumps(entry['author'][0]['name'],ensure_ascii = False) #专辑名
 						temp = json.dumps(entry['author'][0]['name'],ensure_ascii = False)
+				#		list[i][0] = temp
 						print i,temp[8:len(temp)-2]
 						#print i,json.dumps(entry['author'][0]['name'],ensure_ascii = False)
 					else:
 						#Data['author'] = ''
+				#		list[i][0] = ''
 						print ''
 					temp = json.dumps(entry['link'][2],ensure_ascii = False)
+				#	list[i][1] = temp
 					print temp[28:len(temp)-2]
 					temp = json.dumps(entry['title'],ensure_ascii = False)
+				#	list[i][2] = temp
 					print temp[8:len(temp)-2]
 					print "--------------------------------------------------"
 					#Data['img'] = json.dumps(entry['link'][2],ensure_ascii = False)
@@ -65,6 +76,15 @@ class update:
 					#print json.dumps(entry['title'],ensure_ascii = False)
 					#Data['Album'] = json.dumps(entry['title'],ensure_ascii=False)  	#歌手名
 					i+=1
+				print i
+				num = 0
+			#	print num
+				for num in range(i):
+					print num
+					print list[num][0]
+					print list[num][1]
+					print list[num][2]
+				print num
 				id = input("please input the id:\n")
 				#根据用户输入更新文件信息
 				print "您选择了:"
@@ -81,6 +101,9 @@ class update:
 				print Data['Album']
 				time.sleep(3)
 			self.refresh(Data)
+
+			self.mylock.release()
+
 		except:
 			print "服务器连接失败!";
 	#更新歌曲信息
@@ -110,4 +133,3 @@ class update:
 			tag.update()
 		except:
 			print "该mp3文件类型不支持!";
-
