@@ -9,16 +9,20 @@ import time
 import threading
 
 class update:
-	url = "http://api.douban.com/music/subjects"
-	def __init__(self,filename,Lock):
+	key = "apikey=05803d0bdc3016901080b723949043b0"
+	def __init__(self,filename,Lock,start_index = 1):
 		self.filename = []
 		self.filename = filename
 		self.mylock = Lock
+		self.maxresults = "10"
+		self.start_index = start_index
 	#	print self.filename[1]
 	#返回歌曲信息
 	def search(self):
-		self.url = self. url + "?" + "q=" + self.filename[1] + "&alt=json"
-	#	print self.url
+		self.url = "http://api.douban.com/music/subjects"
+		self.url = self. url + "?" + "q=" + self.filename[1] + "&start-index=" + str(self.start_index) + "&maxresults=" + self.maxresults +"&alt=json&" + self.key
+		#print self.start_index
+		#print self.url
 		try:
 			req = urllib2.Request(self.url)
 			fd = urllib2.urlopen(req)
@@ -31,8 +35,9 @@ class update:
 			Len = json.dumps(entries['opensearch:totalResults'],ensure_ascii=False)	
 			Sum = int(Len[8:len(Len)-2])
 			#如果没有查询到结果
-
+			#if self.start_index == 1:
 			self.mylock.acquire()
+			print self.url
 			print  "歌名",self.filename[1]
 			if Sum == 0:
 				print "Not Found!"
@@ -51,24 +56,19 @@ class update:
 				Data['img'] = Data['img'][28:len(Data['img'])]
 			#如果存在多条结果
 			else:
-				list = [[0 for col in range(10)]for row in range(3)]
-				i = 0
+				i = 1
 				for entry in entries['entry']:
 					if author in entry:
 						#Data['author'] = json.dumps(entry['author'][0]['name'],ensure_ascii = False) #专辑名
 						temp = json.dumps(entry['author'][0]['name'],ensure_ascii = False)
-				#		list[i][0] = temp
 						print i,temp[8:len(temp)-2]
 						#print i,json.dumps(entry['author'][0]['name'],ensure_ascii = False)
 					else:
 						#Data['author'] = ''
-				#		list[i][0] = ''
 						print ''
 					temp = json.dumps(entry['link'][2],ensure_ascii = False)
-				#	list[i][1] = temp
 					print temp[28:len(temp)-2]
 					temp = json.dumps(entry['title'],ensure_ascii = False)
-				#	list[i][2] = temp
 					print temp[8:len(temp)-2]
 					print "--------------------------------------------------"
 					#Data['img'] = json.dumps(entry['link'][2],ensure_ascii = False)
@@ -76,36 +76,40 @@ class update:
 					#print json.dumps(entry['title'],ensure_ascii = False)
 					#Data['Album'] = json.dumps(entry['title'],ensure_ascii=False)  	#歌手名
 					i+=1
-				print i
-				num = 0
-			#	print num
-				for num in range(i):
-					print num
-					print list[num][0]
-					print list[num][1]
-					print list[num][2]
-				print num
+				if Sum-self.start_index > 0:
+					print str(i) + " 下一页"
 				id = input("please input the id:\n")
 				#根据用户输入更新文件信息
-				print "您选择了:"
-				result = entries['entry'][id-1]
-				if author in result:
-					Data['author'] = json.dumps(result['author'][0]['name'],ensure_ascii = False)
-					Data['author'] = Data['author'][8:len(Data['author'])-2]	#歌手名
-					print Data['author']
-				Data['img'] = json.dumps(result['link'][2],ensure_ascii = False)	#专辑封面url
-				Data['img'] = Data['img'][28:len(Data['img'])-2]
-				print Data['img']
-				Data['Album'] = json.dumps(result['title'],ensure_ascii = False)	#专辑名
-				Data['Album'] = Data['Album'][8:len(Data['Album'])-2]
-				print Data['Album']
-				time.sleep(3)
-			self.refresh(Data)
-
+				#如果用户点击了下一页
+				if id == i:
+					self.start_index += 10
+				#	print self.start_index
+					self.search()
+				else:
+					print "您选择了:"
+					result = entries['entry'][id-1]
+					if author in result:
+						Data['author'] = json.dumps(result['author'][0]['name'],ensure_ascii = False)
+						Data['author'] = Data['author'][8:len(Data['author'])-2]	#歌手名
+						print Data['author']
+					Data['img'] = json.dumps(result['link'][2],ensure_ascii = False)	#专辑封面url
+					Data['img'] = Data['img'][28:len(Data['img'])-2]
+					print Data['img']
+					Data['Album'] = json.dumps(result['title'],ensure_ascii = False)	#专辑名
+					Data['Album'] = Data['Album'][8:len(Data['Album'])-2]
+					print Data['Album']
+					print '-----------------------------------------------------------'
+					time.sleep(3)
+					#self.start_index = 1
+					#释放锁
+					#
 			self.mylock.release()
-
+			#self.refresh(Data)
+			#if self.start_index == 1:
+			#	self.mylock.release()
 		except:
 			print "服务器连接失败!";
+			self.mylock.release()
 	#更新歌曲信息
 	def refresh(self,data):
 	#	print data['author']
