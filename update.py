@@ -99,7 +99,7 @@ class update:
 					Data['Album'] = Data['Album'][8:len(Data['Album'])-2]
 					print Data['Album']
 					print '-----------------------------------------------------------'
-					time.sleep(3)
+					#time.sleep(3)
 					#self.start_index = 1
 					#释放锁
 					#
