@@ -38,7 +38,7 @@ class producer(threading.Thread):
 		i = 0
 		while i < self.num:
 			n = i%self.que.maxsize
-			self.data.put(n)
+			self.que.put(n)
 			#创建一个新进程
 			c = customer(n, self.que, self.url, self.cookie)
 			c.start()
