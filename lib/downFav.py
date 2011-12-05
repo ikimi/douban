@@ -12,20 +12,23 @@ def fhandle(s):
     return s.replace("/","and").replace(" ","")
 
 #修改tag信息
-def modify(self, s1, s2, s3, img_path):
+def modify(path, s1, s2, s3, img_path):
 	tag = eyeD3.Tag()
-	if not tag.link(self):
+	tag.link(path)
+	if not tag.link(path):
 		tag.header.setVersion(eyeD3.ID3_V2_3)
 	tag.encoding = '\x01'
 	
-	tag.setTile(s1)
+	tag.setTitle(s1)
 	tag.setArtist(s2)
 	tag.setAlbum(s3)
-	
+
+	print '111'
 	img = urllib.urlopen(img_path).read()
 	temp = file('temp.jpg','wb')
 	temp.write(img)
 	temp.close()
+	print '222'
 	tag.addImage(3,'temp.jpg',u"")
 	tag.update()
  
@@ -56,7 +59,7 @@ def get(myurl,cookie):
 		content2 = urllib2.urlopen(req2).read()
 		soup2 = BeautifulSoup(str(content2))
 		soup2 = soup2.find("div", {"id" : "mainpic"})
-		img_pathc = soup2.contents[1]
+		img_pathc = soup2.contents[0]
 		img_path = img_pathc["href"]
 
 		try:
@@ -66,10 +69,10 @@ def get(myurl,cookie):
 				c=c['song']
 				for i in c:
 					if unicode(str(i['title']),'utf-8')==handle(p1.string):
-						#tag = eyeD3.Tag()
 						local = "../Incoming/" + fhandle(handle(p1.string)) + "-" + fhandle(handle(p2.string)) + ".mp3"
 						urllib.urlretrieve(i['url'].replace('\\',''), local)
-						modify(local, fhandle(handle(p1.string)), fhandle(handle(p2.string)), fhandle(handle(p3.string)), img_path)
+						modify(local, fhandle(handle(p1.string)), fhandle(handle(p2.string)), fhandle(handle(p3.a.string)), img_path)
+						print '111'
 						mark=True
 						break
 				if mark:
