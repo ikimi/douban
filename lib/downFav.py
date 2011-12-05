@@ -1,8 +1,10 @@
 #! 
-# -*- coding:utf-8 -*-
- 
+# -*- coding:utf-8 -*- 
 from BeautifulSoup import BeautifulSoup
 from eyeD3 import *
+import downQ
+import threading
+from Queue import Queue
 import urllib,urllib2,cookielib,re
  
 def handle(s):
@@ -23,12 +25,10 @@ def modify(path, s1, s2, s3, img_path):
 	tag.setArtist(s2)
 	tag.setAlbum(s3)
 
-	print '111'
 	img = urllib.urlopen(img_path).read()
 	temp = file('temp.jpg','wb')
 	temp.write(img)
 	temp.close()
-	print '222'
 	tag.addImage(3,'temp.jpg',u"")
 	tag.update()
  
@@ -51,7 +51,7 @@ def get(myurl,cookie):
 		m=p.search(a["href"])
 		num=int(m.groups()[0])
 		url3=url2%num
-		print url3
+		#print url3
 		mark=False
 		#获取专辑封面
 		sub_path = a["href"]#专辑链接
@@ -87,10 +87,16 @@ def main():
     url="http://douban.fm/mine?start=%d&type=liked"
     cookie=raw_input('cookie:')
     print "you should enter the pages you want to download"
-    page0=int(raw_input('page from:'))
+    #page0=int(raw_input('page from:'))
     page1=int(raw_input('page to:'))
-    for i in range(page1-page0+1):
-        get(url%((i+page0-1)*15),cookie)
+    num = page1
+    que = Queue(maxsize = 10)
+    process = downQ.producer(que, num, url, cookie)
+    process.start()
+    process.join
+
+    #for i in range(page1):
+    #   get(url%(i*15),cookie)
  
 if __name__ == "__main__":
     main()
