@@ -72,7 +72,6 @@ def get(myurl,cookie):
 						local = "../Incoming/" + fhandle(handle(p1.string)) + "-" + fhandle(handle(p2.string)) + ".mp3"
 						urllib.urlretrieve(i['url'].replace('\\',''), local)
 						modify(local, fhandle(handle(p1.string)), fhandle(handle(p2.string)), fhandle(handle(p3.a.string)), img_path)
-						print '111'
 						mark=True
 						break
 				if mark:
