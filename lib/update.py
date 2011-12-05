@@ -29,12 +29,12 @@ class update:
 		try:
 			req = urllib2.Request(self.url)
 			fd = urllib2.urlopen(req)
-	#		print "a"
+			#print "a"
 			data = fd.read()
 			entries = json.loads(data)
 			author = 'author'
 			Data ={}
-		#	print self.filename[1]
+			#print self.filename[1]
 			#满足符合的歌曲总数
 			Len = json.dumps(entries['opensearch:totalResults'],ensure_ascii=False)	
 			Sum = int(Len[8:len(Len)-2])
