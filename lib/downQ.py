@@ -11,15 +11,15 @@ from Queue import Queue
 
 class customer(threading.Thread):
 	Data = []
-	def __init__(self, n, que, url, cookie):
+	def __init__(self, i, que, url, cookie):
 		threading.Thread.__init__(self)
 		self.que = que
-		self.n = n
+		self.i = i
 		self.url = url
 		self.cookie = cookie
 
 	def run(self):
-		downFav.get(self.url%(self.n*15), self.cookie)
+		downFav.get(self.url%(self.i*15), self.cookie)
 		self.que.get()
 
 # -*- 接受两个参数	
@@ -40,7 +40,7 @@ class producer(threading.Thread):
 			n = i%self.que.maxsize
 			self.que.put(n)
 			#创建一个新进程
-			c = customer(n, self.que, self.url, self.cookie)
+			c = customer(i, self.que, self.url, self.cookie)
 			c.start()
 			
 			i += 1
